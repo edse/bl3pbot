@@ -1,0 +1,9 @@
+flake8
+freezegun
+isort
+pkgversion
+tox
+vcrpy
+pytest
+pytest-cov
+pytest-django

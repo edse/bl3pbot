@@ -1,0 +1,9 @@
+Django
+influxdb
+ipdb
+ipython
+requests
+tweepy
+websocket-client
+colorama
+emoji
