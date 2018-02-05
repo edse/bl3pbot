@@ -16,13 +16,7 @@ git clone https://github.com/edse/bl3pbot.git
 
 ## Running
 $ cd bl3pbot
-$ make build
-$ make up
-
-
-## Running on Raspberry Pi
-$ cd bl3pbot
-$ make build-amr
+$ make build (or `make build-arm` for raspberry pi)
 $ make up
 
 
