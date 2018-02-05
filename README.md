@@ -14,15 +14,16 @@ Bitcoin trading bot
 git clone https://github.com/edse/bl3pbot.git
 
 
-## Running using Docker
-cd bl3pbot
-docker-compose up
+## Running
+$ cd bl3pbot
+$ make build
+$ make up
 
 
-## Running on localy *
-cd bl3pbot
-make dev
-* Make sure you are runing influxdb on default ports
+## Running on Raspberry Pi
+$ cd bl3pbot
+$ make build-amr
+$ make up
 
 
 ## TODO
