@@ -35,7 +35,7 @@ influx:
 dev: clean venv requirements grafana influx
 
 build-arm:
-	docker-compose build --force-rm --no-cache --file docker-compose-arm.yml
+	docker-compose --file docker-compose-arm.yml build --force-rm --no-cache
 
 build:
 	docker-compose build --force-rm --no-cache
