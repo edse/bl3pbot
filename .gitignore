@@ -108,3 +108,6 @@ src/main/params.py
 
 # data
 data/
+
+# logs
+log.txt
