@@ -2,76 +2,13 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 import json
 import websocket
+import time
 
 from trader.analyser import Analyser
 from trader.storage import Storage
 from trader.trader import Trader
 from trader.models import Session
 from trader.base import *  # noqa
-
-# def parse(message):
-#     data = json.loads(message)
-#     price = float(data['price_int']) / NORM_PRICE
-#     amount = float(data['amount_int']) / NORM_AMOUNT
-#     return Storage.store([{
-#         'measurement': 'BTC_EUR',
-#         'tags': {
-#             'asset': 'BTC',
-#             'currency': 'EUR'
-#         },
-#         'fields': {
-#             'timestamp': data['date'],
-#             'price': price,
-#             'amount': amount
-#         }
-#     }])
-
-
-# def on_message(ws, message, session=session):
-#     data = parse(message)[0]
-#     result = Analyser.analyse(session, data)
-
-#     trader.take_action(
-#         trend=result.trend,
-#         current=result.current
-#     )
-
-
-# def on_error(ws, error):
-#     logger.log('error', error)
-
-
-# def run():
-#     session = Session.objects.create(
-#         status=Session.RUNNING,
-#         ma1=settings.BOT_DATA_SAMPLE_MA1,
-#         ma2=settings.BOT_DATA_SAMPLE_MA2,
-#         data_range=settings.BOT_DATA_SAMPLE_RANGE,
-#         data_group=settings.BOT_DATA_SAMPLE_GROUP,
-#         data_interval=settings.BOT_TICKER_INTERVAL
-#     )
-#     trader = Trader(session_id=session.id) # noqa
-#     session.start()
-
-#     logger.log('session', 'Session #{} created'.format(session.id))
-#     logger.log('start', 'Bot running')
-
-#     ws = websocket.WebSocketApp(
-#         get_trades_path(),
-#         on_message=on_message,
-#         on_error=on_error
-#     )
-#     ws.run_forever()
-
-
-# def get_trades_path():
-#     return settings.EXCHANGES['BL3P']['public']['wss'] + \
-#         settings.EXCHANGES['BL3P']['public']['paths']['trades']
-
-
-# class Command(BaseCommand):
-#     def handle(self, *args, **options):
-#         run()
 
 
 class Bl3pWebSocket(websocket.WebSocketApp):
@@ -90,7 +27,7 @@ def get_trades_path():
         settings.EXCHANGES['BL3P']['public']['paths']['trades']
 
 
-def parse(message):
+def store_data(message):
     data = json.loads(message)
     price = float(data['price_int']) / NORM_PRICE
     amount = float(data['amount_int']) / NORM_AMOUNT
@@ -109,13 +46,7 @@ def parse(message):
 
 
 def on_message(ws, message):
-    data = parse(message)[0]
-    result = Analyser.analyse(ws.session, data)
-
-    ws.trader.take_action(
-        trend=result.trend,
-        current=result.current
-    )
+    store_data(message)[0]
 
 
 def on_error(ws, error):
@@ -126,6 +57,18 @@ def on_error(ws, error):
 
 def on_close(ws):
     logger.log('closed', '"### closed ###"')
+
+
+def run_analizer():
+    while True:
+        time.sleep(settings.BOT_ANALIZER_INTERVAL)
+
+        result = Analyser.analyse(ws.session)
+
+        ws.trader.take_action(
+            trend=result.trend,
+            current=result.current
+        )
 
 
 def run():
@@ -139,7 +82,7 @@ def run():
         data_group=settings.BOT_DATA_SAMPLE_GROUP,
         data_interval=settings.BOT_TICKER_INTERVAL
     )
-    trader = Trader(session_id=session.id) # noqa
+    trader = Trader(session_id=session.id)
     session.start()
 
     logger.log('session', 'Session #{} created'.format(session.id))
@@ -153,6 +96,8 @@ def run():
     ws.session = session
     ws.trader = trader
     ws.run_forever()
+
+    run_analizer()
 
 
 def echo_settings():
