@@ -37,6 +37,7 @@ EXCHANGES = {
         'max_sell_value': 100000000,  # TODO: 1 BTC
         'soft_run': True,             # dont send orders to exchage
         'intercalate_trade': True,    # intercalte buy and sell orders
-        'safe_trade': True,           # dont sell cheap, dont buy high
+        'safe_buy': True,             # dont buy high
+        'safe_sell': True,            # dont sell cheap
     }
 }

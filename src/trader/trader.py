@@ -53,12 +53,6 @@ class Trader(object):
     def store_trade(self, params, order_id=0):
         logger.log('trade', str(params))
 
-        # order = self.get_order(order_id)
-        # amount = float(order['data']['amount']['value'])
-        # price = float(order['data']['price']['value'])
-        # fee = float(order['data']['total_fee']['value'])
-        # total = float(order['data']['total_spent']['value'])
-
         amount = float(params['amount_int']) / NORM_AMOUNT
         price = float(params['price_int']) / NORM_PRICE
         fee = float(settings.EXCHANGES['BL3P']['trade_fee'])
@@ -73,6 +67,7 @@ class Trader(object):
             'fields': {
                 'price': price,
                 'amount': amount,
+                'total': total,
                 'trend': 10 if params['type'] == 'bid' else -10
             }
         }])
@@ -101,9 +96,9 @@ class Trader(object):
         }
 
         """
-        " SAFE TRADE ONLY ON SELL ORDERS
-
-        if settings.EXCHANGES['BL3P']['safe_trade']:
+        " SAFE BUY
+        """
+        if settings.EXCHANGES['BL3P']['safe_buy']:
             # check if the buy price + fees is cheaper than the last sell
             last_order = Trade.objects.filter(type=Trade.SELL).last()
 
@@ -122,7 +117,6 @@ class Trader(object):
                     'Current price: {} Last trade price + fees: {}'.format(price, last_order.price)
                 )
                 return False
-        """
 
         if amount <= 0:
             return False
@@ -144,7 +138,10 @@ class Trader(object):
             'fee_currency': 'BTC'
         }
 
-        if settings.EXCHANGES['BL3P']['safe_trade']:
+        """
+        " SAFE SELL
+        """
+        if settings.EXCHANGES['BL3P']['safe_sell']:
             # check if the sell price is higher than the last buy + fees
             last_order = Trade.objects.filter(type=Trade.BUY).last()
 
@@ -153,7 +150,7 @@ class Trader(object):
                 _fee = float(settings.EXCHANGES['BL3P']['trade_fee'])
                 _total = _price + ((_price / 100) * _fee)
 
-                if _total <= last_order.price:
+                if _total <= last_order.total:
                     logger.log(
                         'safe_trade',
                         'Trying to sell for a cheaper price than the last buy with safe_trade set to true!'
