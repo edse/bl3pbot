@@ -119,21 +119,13 @@ class Analyser(object):
             return 0
 
     @staticmethod
-    def analyse(session, data):
-        # range = settings.BOT_DATA_SAMPLE_RANGE  # 3h
-        # group = settings.BOT_DATA_SAMPLE_GROUP  # 1m
-        # ma1 = settings.BOT_DATA_SAMPLE_MA1      # 10
-        # ma2 = settings.BOT_DATA_SAMPLE_MA2      # 20
-
+    def analyse(session, pair='BTC_EUR'):
         range = session.data_range
         group = session.data_group
         ma1 = session.ma1
         ma2 = session.ma2
 
         influx_client = Storage.get_client()
-        pair = data['measurement']
-        # tweet = None
-        # position = ''
         current = {
             'time': None,
             'price': None,
