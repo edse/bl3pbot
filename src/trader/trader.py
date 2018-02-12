@@ -1,9 +1,9 @@
+from trader.analyser import Analyser
+from trader.base import *  # noqa
+from trader.client import Bl3p
 from django.conf import settings
-from .client import Bl3p
-from .storage import Storage
-from .models import Trade, Session
-from .analyser import Analyser
-from .base import *  # noqa
+from trader.models import Session, Trade
+from trader.storage import Storage
 
 
 class Trader(object):
@@ -24,11 +24,18 @@ class Trader(object):
         available = 0
         balance = self.client.get_balance()
 
-        if balance:
+        if not balance:
+            return 0
+
+        if self.session.pair == 'BTCEUR':
             available = int(balance['data']['wallets']['BTC']['available']['value_int'])
+        elif self.session.pair == 'LTCEUR':
+            available = int(balance['data']['wallets']['LTC']['available']['value_int'])
+        else:
+            return 0
 
         if available < settings.EXCHANGES['BL3P']['min_sell_value']:
-            logger.log('amount', 'BTC amount available ({}) is smaller than min_sell_value ({})'.format(
+            logger.log('amount', 'Amount available ({}) is smaller than min_sell_value ({})'.format(
                 available, settings.EXCHANGES['BL3P']['min_sell_value']
             ))
             return 0
@@ -60,7 +67,7 @@ class Trader(object):
 
         # Influx
         stored = Storage.store([{
-            'measurement': 'TRADE',
+            'measurement': '{pair}_TRADE'.format(pair=self.session.pair),
             'tags': {
                 'asset': params['type'],
             },
@@ -74,7 +81,7 @@ class Trader(object):
 
         # Django
         Trade.objects.create(
-            session_id=1,  # TODO
+            session_id=self.session.id,
             order_id=int(order_id),
             amount=amount,
             price=price,
@@ -92,7 +99,7 @@ class Trader(object):
             'type': 'bid',
             'amount_int': amount,
             'price_int': price,
-            'fee_currency': 'BTC'
+            'fee_currency': 'BTC' if self.session.pair == 'BTCEUR' else 'LTCEUR'
         }
 
         """
@@ -109,11 +116,11 @@ class Trader(object):
 
             if _total > last_order.total:
                 logger.log(
-                    'safe_trade',
+                    'safe_buy',
                     'Trying to buy for a higher price than the last sell with safe_trade set to true!'
                 )
                 logger.log(
-                    'safe_trade',
+                    'safe_buy',
                     'Current price: {} Last trade price + fees: {}'.format(price, last_order.price)
                 )
                 return False
@@ -121,7 +128,7 @@ class Trader(object):
         if amount <= 0:
             return False
 
-        response = self.client.add_order(params)
+        response = self.client.add_order(params, self.session.pair)
 
         if response:
             self.store_trade(params, response['data']['order_id'])
@@ -135,7 +142,7 @@ class Trader(object):
             'type': 'ask',
             'amount_int': amount,
             'price_int': price,
-            'fee_currency': 'BTC'
+            'fee_currency': 'BTC' if self.session.pair == 'BTCEUR' else 'LTCEUR'
         }
 
         """
@@ -152,11 +159,11 @@ class Trader(object):
 
                 if _total <= last_order.total:
                     logger.log(
-                        'safe_trade',
+                        'safe_sell',
                         'Trying to sell for a cheaper price than the last buy with safe_trade set to true!'
                     )
                     logger.log(
-                        'safe_trade',
+                        'safe_sell',
                         'Current price: {} Last trade price + fees: {}'.format(price, last_order.total)
                     )
                     return False
@@ -164,7 +171,7 @@ class Trader(object):
         if amount <= 0:
             return False
 
-        response = self.client.add_order(params)
+        response = self.client.add_order(params, self.session.pair)
 
         if response:
             self.store_trade(params, response['data']['order_id'])

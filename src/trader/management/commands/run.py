@@ -1,14 +1,14 @@
-from django.core.management.base import BaseCommand
-from django.conf import settings
 import json
-import websocket
 import time
 
+import websocket
+from django.conf import settings
+from django.core.management.base import BaseCommand
 from trader.analyser import Analyser
+from trader.base import *  # noqa
+from trader.models import Session
 from trader.storage import Storage
 from trader.trader import Trader
-from trader.models import Session
-from trader.base import *  # noqa
 
 
 class Bl3pWebSocket(websocket.WebSocketApp):
@@ -22,17 +22,17 @@ class Command(BaseCommand):
         run()
 
 
-def get_trades_path():
+def get_trades_path(pair):
     return settings.EXCHANGES['BL3P']['public']['wss'] + \
-        settings.EXCHANGES['BL3P']['public']['paths']['trades']
+        settings.EXCHANGES['BL3P']['public']['paths']['trades'].format(pair=pair)
 
 
-def store_data(message):
+def store_data(message, pair):
     data = json.loads(message)
     price = float(data['price_int']) / NORM_PRICE
     amount = float(data['amount_int']) / NORM_AMOUNT
     return Storage.store([{
-        'measurement': 'BTC_EUR',
+        'measurement': pair,
         'tags': {
             'asset': 'BTC',
             'currency': 'EUR'
@@ -46,7 +46,7 @@ def store_data(message):
 
 
 def on_message(ws, message):
-    store_data(message)[0]
+    store_data(message, pair=ws.session.pair)
 
 
 def on_error(ws, error):
@@ -80,7 +80,8 @@ def run():
         ma3=settings.BOT_DATA_SAMPLE_MA3,
         data_range=settings.BOT_DATA_SAMPLE_RANGE,
         data_group=settings.BOT_DATA_SAMPLE_GROUP,
-        data_interval=settings.BOT_TICKER_INTERVAL
+        data_interval=settings.BOT_TICKER_INTERVAL,
+        pair=settings.BOT_DEFAULT_PAIR,
     )
     trader = Trader(session_id=session.id)
     session.start()
@@ -89,7 +90,7 @@ def run():
     logger.log('start', 'Bot running')
 
     ws = Bl3pWebSocket(
-        get_trades_path(),
+        get_trades_path(session.pair),
         on_message=on_message,
         on_error=on_error
     )
@@ -109,4 +110,5 @@ def echo_settings():
     logger.log('max_sell_value', settings.EXCHANGES['BL3P']['max_sell_value'])
     logger.log('soft_run', settings.EXCHANGES['BL3P']['soft_run'])
     logger.log('intercalate_trade', settings.EXCHANGES['BL3P']['intercalate_trade'])
-    logger.log('safe_trade', settings.EXCHANGES['BL3P']['safe_trade'])
+    logger.log('safe_buy', settings.EXCHANGES['BL3P']['safe_buy'])
+    logger.log('safe_sell', settings.EXCHANGES['BL3P']['safe_sell'])

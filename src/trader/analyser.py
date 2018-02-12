@@ -1,8 +1,7 @@
 from collections import namedtuple
-# from django.conf import settings
-from .storage import Storage
-from .base import *  # noqa
 
+from .base import *  # noqa
+from .storage import Storage
 
 TrendResult = namedtuple('Trend', ['trend', 'current'])
 
@@ -26,6 +25,8 @@ class Analyser(object):
         range = session.data_range
         group = session.data_group
         ma3 = session.ma3
+        pair = session.pair
+        diff_measurement = '{pair}_MA1_MA2_DIFF'.format(pair=pair)
 
         macd = []
         signal = []
@@ -33,24 +34,26 @@ class Analyser(object):
         # SIGNAL
         q = """SELECT moving_average(mean("diff"), {ma3}) as ma3,
             mean("diff") as diff
-            FROM "MA1_MA2_DIFF"
+            FROM "{diff_measurement}"
             WHERE time > now() - {range}
             GROUP BY time({group}) fill(linear)""".format(
+            diff_measurement=diff_measurement,
+            pair=pair,
             ma3=ma3,
             range=range,
             group=group
         )
         rs = influx_client.query(q)
-        if len(list(rs.get_points(measurement='MA1_MA2_DIFF'))) > 1:
-            signal.append(list(rs.get_points(measurement='MA1_MA2_DIFF'))[-2]['ma3'])
-            signal.append(list(rs.get_points(measurement='MA1_MA2_DIFF'))[-1]['ma3'])
+        if len(list(rs.get_points(measurement=diff_measurement))) > 1:
+            signal.append(list(rs.get_points(measurement=diff_measurement))[-2]['ma3'])
+            signal.append(list(rs.get_points(measurement=diff_measurement))[-1]['ma3'])
 
-            _signal = float(list(rs.get_points(measurement='MA1_MA2_DIFF'))[-1]['ma3'])
-            _macd = float(list(rs.get_points(measurement='MA1_MA2_DIFF'))[-1]['diff'])
+            _signal = float(list(rs.get_points(measurement=diff_measurement))[-1]['ma3'])
+            _macd = float(list(rs.get_points(measurement=diff_measurement))[-1]['diff'])
             _hist = _macd - _signal
 
             Storage.store([{
-                'measurement': 'MACD',
+                'measurement': '{pair}_MACD'.format(pair=pair),
                 'tags': {
                     'asset': 'MA3',
                     'currency': 'MACD'
@@ -65,9 +68,11 @@ class Analyser(object):
 
         # MACD
         q = """SELECT mean("diff") as diff
-            FROM "MA1_MA2_DIFF"
+            FROM "{diff_measurement}"
             WHERE time > now() - {range}
             GROUP BY time({group}) fill(previous)""".format(
+            diff_measurement=diff_measurement,
+            pair=pair,
             range=range,
             group=group
         )
@@ -104,7 +109,7 @@ class Analyser(object):
                 state = 'horizontal'
 
             Storage.store([{
-                'measurement': 'TREND',
+                'measurement': '{pair}_TREND'.format(pair=pair),
                 'tags': {
                     'state': state,
                 },
@@ -119,11 +124,13 @@ class Analyser(object):
             return 0
 
     @staticmethod
-    def analyse(session, pair='BTC_EUR'):
+    def analyse(session):
         range = session.data_range
         group = session.data_group
         ma1 = session.ma1
         ma2 = session.ma2
+        pair = session.pair
+        diff_measurement = '{pair}_MA1_MA2_DIFF'.format(pair=pair)
 
         influx_client = Storage.get_client()
         current = {
@@ -137,9 +144,10 @@ class Analyser(object):
         # TODO: Replace 3 queries by 1
         #
         q = """SELECT mean("price") as price
-            FROM "BTC_EUR"
+            FROM "{pair}"
             WHERE time > now() - {range}
             GROUP BY time({group}) fill(previous)""".format(
+            pair=pair,
             range=range,
             group=group
         )
@@ -151,9 +159,10 @@ class Analyser(object):
                 current['time'] = r['time']
 
         q = """SELECT moving_average(mean("price"), {ma1}) as ma1
-            FROM "BTC_EUR"
+            FROM "{pair}"
             WHERE time > now() - {range}
             GROUP BY time({group}) fill(linear)""".format(
+            pair=pair,
             ma1=ma1,
             range=range,
             group=group
@@ -165,9 +174,10 @@ class Analyser(object):
                 current['ma1'] = r['ma1']
 
         q = """SELECT moving_average(mean("price"), {ma2}) as ma2
-            FROM "BTC_EUR"
+            FROM "{pair}"
             WHERE time > now() - {range}
             GROUP BY time({group}) fill(linear)""".format(
+            pair=pair,
             ma2=ma2,
             range=range,
             group=group
@@ -179,11 +189,10 @@ class Analyser(object):
                 current['ma2'] = r['ma2']
 
         if current['time'] and current['price'] and current['ma1'] and current['ma2']:
-            # diff
             diff = current['ma1'] - current['ma2']
 
             Storage.store([{
-                'measurement': 'MA1_MA2_DIFF',
+                'measurement': diff_measurement,
                 'tags': {
                     'asset': 'MA1',
                     'currency': 'MA2'
@@ -197,5 +206,4 @@ class Analyser(object):
             }])
 
         trend = Analyser.checkTrend(session, current)
-        # logger.log('trend', trend)
         return TrendResult(trend, current)

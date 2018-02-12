@@ -31,6 +31,7 @@ class Session(models.Model):
     euro_balance_at_start = models.FloatField(default=0)
     btc_balance = models.FloatField(default=0)
     euro_balance = models.FloatField(default=0)
+    pair = models.CharField(default='BTCEUR', max_length=16)
     started_at = models.DateTimeField(null=True)
     ended_at = models.DateTimeField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)

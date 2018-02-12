@@ -1,9 +1,3 @@
-# TWITTER
-TWITTER_CONSUMER_KEY = '!CHANGE-ME!'
-TWITTER_CONSUMER_SECRET = '!CHANGE-ME!'
-TWITTER_ACCESS_TOKEN = '!CHANGE-ME!'
-TWITTER_ACCESS_TOKEN_SECRET = '!CHANGE-ME!'
-
 # DJANGO
 SECRET_KEY = '!CHANGE-ME!'
 DEBUG = True
@@ -16,8 +10,8 @@ EXCHANGES = {
             'http': 'https://api.bl3p.eu/1/',
             'wss': 'wss://api.bl3p.eu/1/',
             'paths': {
-                'trades': 'BTCEUR/trades',
-                'ticker': 'BTCEUR/ticker',
+                'trades': '{pair}/trades',
+                'ticker': '{pair}/ticker',
             }
         },
         'private': {
@@ -26,9 +20,13 @@ EXCHANGES = {
             'private_key': '!CHANGE-ME!',
             'paths': {
                 'get_balance': 'GENMKT/money/info',
-                'add_order': 'BTCEUR/money/order/add',
-                'get_order': 'BTCEUR/money/order/result'
+                'add_order': '{pair}/money/order/add',
+                'get_order': '{pair}/money/order/result'
             }
+        },
+        'pairs': {
+            'BTC': 'BTCEUR',
+            'LTC': 'LTCEUR'
         },
         'trade_fee': 0.255,           # TODO: replace by value from API
         'min_buy_value': 1000000,     # TODO: 10 EUR (*1e5)

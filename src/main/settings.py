@@ -12,17 +12,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
-# TWITTER
-TWITTER_CONSUMER_KEY = '!CHANGE-ME!'
-TWITTER_CONSUMER_SECRET = '!CHANGE-ME!'
-TWITTER_ACCESS_TOKEN = '!CHANGE-ME!'
-TWITTER_ACCESS_TOKEN_SECRET = '!CHANGE-ME!'
-
-# TWEETS
-TWEET_TITLE = '#BL3P #{} Trading advice!'
-TWEET_POSITION = 'Position to take: {}'
-TWEET_PRICE = 'Market price: {}'
-TWEET_TIME = 'Based on market time: {}'
+ROOT_PATH = os.path.dirname(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
 # INFLUXDB
 INFLUXDB_HOST = 'influx'
@@ -32,7 +22,6 @@ INFLUXDB_PASS = 'root'
 INFLUXDB_DATABASE = 'bl3pbot'
 
 # BOT
-BOT_TWEET = True
 BOT_MIN_DIFF = -0.00025
 BOT_MAX_DIFF = 0.00025
 BOT_ADVICE_TTL = 5 * 60
@@ -43,6 +32,7 @@ BOT_DATA_SAMPLE_MA2 = '26'
 BOT_DATA_SAMPLE_MA3 = '9'
 BOT_TICKER_INTERVAL = '15'
 BOT_ANALIZER_INTERVAL = 15 * 60
+BOT_DEFAULT_PAIR = 'LTCEUR'
 
 
 # DJANGO

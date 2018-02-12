@@ -1,33 +1,40 @@
-import hmac
-import urllib
 import base64
 import hashlib
+import hmac
+import urllib
+
 import requests
 from django.conf import settings
-from .base import *  # noqa
+from trader.base import *  # noqa
 
 
 class Bl3p(object):
 
     def get_balance(self):
-        return self.call(settings.EXCHANGES['BL3P']['private']['paths']['get_balance'], {})
+        return self._call(settings.EXCHANGES['BL3P']['private']['paths']['get_balance'], {})
 
-    def add_order(self, params):
-        return self.call(settings.EXCHANGES['BL3P']['private']['paths']['add_order'], params)
+    def add_order(self, params, pair):
+        return self._call(
+            path=settings.EXCHANGES['BL3P']['private']['paths']['add_order'].format(pair=pair),
+            params=params
+        )
 
-    def get_order(self, params):
-        return self.call(settings.EXCHANGES['BL3P']['private']['paths']['get_order'], params)
+    def get_order(self, params, pair):
+        return self._call(
+            path=settings.EXCHANGES['BL3P']['private']['paths']['get_order'].format(pair=pair),
+            params=params
+        )
 
-    def get_headers(self, path, params):
+    def _get_headers(self, path, params):
         post_data = urllib.parse.urlencode(params)
         body = '%s%c%s' % (path, 0x00, post_data)
         headers = {
             'Rest-Key': settings.EXCHANGES['BL3P']['private']['public_key'],
-            'Rest-Sign': self.get_signature(body),
+            'Rest-Sign': self._get_signature(body),
         }
         return headers
 
-    def get_signature(self, body):
+    def _get_signature(self, body):
         return base64.b64encode(
             hmac.new(
                 base64.b64decode(
@@ -38,7 +45,7 @@ class Bl3p(object):
             ).digest()
         )
 
-    def execute(self, path, params, headers, soft_run):
+    def _execute(self, path, params, headers, soft_run):
         if soft_run:
             logger.log('soft_run', 'Skiping real api call: {}'.format(path))
             return None
@@ -50,12 +57,12 @@ class Bl3p(object):
 
         return response.json()
 
-    def call(self, path, params):
+    def _call(self, path, params):
         fullpath = settings.EXCHANGES['BL3P']['private']['url'] + path
-        headers = self.get_headers(path, params)
+        headers = self._get_headers(path, params)
 
         # execute call
-        return self.execute(
+        return self._execute(
             path=fullpath,
             params=params,
             headers=headers,
