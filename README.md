@@ -3,21 +3,21 @@ Bitcoin trading bot
 
 
 ## Requirements
-- Python
-- Virtualend
-- Docker
-- InfluxDB
-- Graphana
+    - Python
+    - Virtualend
+    - Docker
+    - InfluxDB
+    - Graphana
 
 
 ## Install
-git clone https://github.com/edse/bl3pbot.git
+    `$ git clone https://github.com/edse/bl3pbot.git`
 
 
 ## Running
-$ cd bl3pbot
-$ make build (or `make build-arm` for raspberry pi)
-$ make up
+    `$ cd bl3pbot`
+    `$ make build` or `make build-arm` (for raspberry pi)
+    `$ make up`
 
 
 ## TODO
