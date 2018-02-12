@@ -4,6 +4,8 @@ isort
 pkgversion
 tox
 vcrpy
+vcrpy-unittest
 pytest
 pytest-cov
 pytest-django
+model-mommy

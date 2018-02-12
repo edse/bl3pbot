@@ -103,11 +103,7 @@ ENV/
 # sqlite
 *.sqlite3
 
-# params
 src/main/params.py
-
-# data
 data/
-
-# logs
 log.txt
+.pytest_cache/

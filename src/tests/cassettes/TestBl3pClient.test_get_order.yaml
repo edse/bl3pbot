@@ -1,0 +1,57 @@
+interactions:
+- request:
+    body: order_id=21703522
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['17']
+      Content-Type: [application/x-www-form-urlencoded]
+      Rest-Key: ['!CHANGE-ME!']
+      Rest-Sign:
+      - !!binary |
+        N3ZFUkU2NjRMQW1qSk5zdHVUOTZvWnJkelQxUU5aKzFLR2dSY1B4ZDdtczJRODJoNFFjTFpMb3dD
+        WUFYVm5EbVBlNE85a2VuTFBoZitxUTdmTzZ1QVE9PQ==
+      User-Agent: [python-requests/2.18.4]
+    method: POST
+    uri: https://api.bl3p.eu/1/BTCEUR/money/order/result
+  response:
+    body: {string: "{\n  \"result\": \"success\",\n  \"data\": {\n    \"date\": 1518192917,\n\
+        \    \"total_spent\": {\n      \"value_int\": \"203477803\",\n      \"display_short\"\
+        : \"2034.78 EUR\",\n      \"display\": \"2034.77803 EUR\",\n      \"currency\"\
+        : \"EUR\",\n      \"value\": \"2034.77803\"\n    },\n    \"item\": \"BTC\"\
+        ,\n    \"amount\": {\n      \"value_int\": \"29884620\",\n      \"display_short\"\
+        : \"0.30 BTC\",\n      \"display\": \"0.29884620 BTC\",\n      \"currency\"\
+        : \"BTC\",\n      \"value\": \"0.29884620\"\n    },\n    \"avg_cost\": {\n\
+        \      \"value_int\": \"680878000\",\n      \"display_short\": \"6808.78 EUR\"\
+        ,\n      \"display\": \"6808.78000 EUR\",\n      \"currency\": \"EUR\",\n\
+        \      \"value\": \"6808.78000\"\n    },\n    \"trades\": [{\n      \"date\"\
+        : 1518277502,\n      \"amount\": {\n        \"value_int\": \"29884620\",\n\
+        \        \"display_short\": \"0.30 BTC\",\n        \"display\": \"0.29884620\
+        \ BTC\",\n        \"currency\": \"BTC\",\n        \"value\": \"0.29884620\"\
+        \n      },\n      \"item\": \"BTC\",\n      \"trade_id\": 1032429,\n     \
+        \ \"price\": {\n        \"value_int\": \"680878000\",\n        \"display_short\"\
+        : \"6808.78 EUR\",\n        \"display\": \"6808.78000 EUR\",\n        \"currency\"\
+        : \"EUR\",\n        \"value\": \"6808.78000\"\n      },\n      \"currency\"\
+        : \"EUR\"\n    }],\n    \"label\": \"Bot-1\",\n    \"type\": \"bid\",\n  \
+        \  \"amount_funds\": {\n      \"value_int\": \"203477803\",\n      \"display_short\"\
+        : \"2034.78 EUR\",\n      \"display\": \"2034.77803 EUR\",\n      \"currency\"\
+        : \"EUR\",\n      \"value\": \"2034.77803\"\n    },\n    \"total_amount\"\
+        : {\n      \"value_int\": \"29884620\",\n      \"display_short\": \"0.30 BTC\"\
+        ,\n      \"display\": \"0.29884620 BTC\",\n      \"currency\": \"BTC\",\n\
+        \      \"value\": \"0.29884620\"\n    },\n    \"price\": {\n      \"value_int\"\
+        : \"680878000\",\n      \"display_short\": \"6808.78 EUR\",\n      \"display\"\
+        : \"6808.78000 EUR\",\n      \"currency\": \"EUR\",\n      \"value\": \"6808.78000\"\
+        \n    },\n    \"total_fee\": {\n      \"value_int\": \"74858\",\n      \"\
+        display_short\": \"0.00 BTC\",\n      \"display\": \"0.00074858 BTC\",\n \
+        \     \"currency\": \"BTC\",\n      \"value\": \"0.00074858\"\n    },\n  \
+        \  \"currency\": \"EUR\",\n    \"order_id\": 21703522,\n    \"status\": \"\
+        closed\"\n  }\n}\n"}
+    headers:
+      Connection: [keep-alive]
+      Content-Length: ['1980']
+      Content-Type: [application/json]
+      Date: ['Sat, 10 Feb 2018 21:00:47 GMT']
+      Server: [nginx]
+    status: {code: 200, message: OK}
+version: 1
