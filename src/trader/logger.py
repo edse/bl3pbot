@@ -1,6 +1,7 @@
-from emoji import emojize
 from datetime import datetime
-from colorama import Fore, Back, Style, init
+
+from colorama import Back, Fore, Style, init
+from emoji import emojize
 
 
 class Logger(object):
@@ -15,7 +16,8 @@ class Logger(object):
         'down': Back.RED,
         'soft_run': Back.BLUE,
         'intercalate_trade': Back.BLUE,
-        'safe_trade': Back.BLUE,
+        'safe_buy': Back.BLUE,
+        'safe_sell': Back.BLUE,
     }
     foregrounds = {
         'start': Fore.BLACK,
@@ -28,7 +30,8 @@ class Logger(object):
         'down': ':chart_with_downwards_trend: ',
         'soft_run': ':raised_hand: :cop: ',
         'intercalate_trade': ':raised_hand: :cop: ',
-        'safe_trade': ':raised_hand: :cop: ',
+        'safe_buy': ':raised_hand: :cop: ',
+        'safe_sell': ':raised_hand: :cop: ',
     }
 
     def __init__(self):

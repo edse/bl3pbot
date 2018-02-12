@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Advice, Trade, Session
+
+from .models import Advice, Session, Trade
 
 
 @admin.register(Advice)

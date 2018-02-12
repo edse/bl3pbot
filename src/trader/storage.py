@@ -1,5 +1,6 @@
-from influxdb import InfluxDBClient
 from django.conf import settings
+from influxdb import InfluxDBClient
+
 from .base import *  # noqa
 
 
