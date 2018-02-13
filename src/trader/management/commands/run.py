@@ -48,7 +48,7 @@ def store_data(message, pair):
 
 def on_message(ws, message):
     store_data(message, pair=ws.session.pair)
-    analize()
+    analize(ws)
 
 
 def on_error(ws, error):
@@ -61,7 +61,7 @@ def on_close(ws):
     logger.log('closed', '"### closed ###"')
 
 
-def analize():
+def analize(ws):
     if time.time() - ws.last_analizer_time >= settings.BOT_ANALIZER_INTERVAL:
         ws.last_analizer_time = time.time()
         logger.log('analysing', 'Session: #{}'.format(ws.session.id))
