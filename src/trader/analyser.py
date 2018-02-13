@@ -68,6 +68,7 @@ class Analyser(object):
                 }])
             except Exception as e:
                 logger.log('error', e)
+                pass
 
         # MACD
         q = """SELECT mean("diff") as diff
