@@ -1,0 +1,161 @@
+GET BALANCE:
+{
+    "data": {
+        "trade_fee": 0.25,
+        "user_id": 1,
+        "wallets": {
+            "EUR": {
+                "balance": {
+                    "currency": "EUR",
+                    "value": "0.00011",
+                    "display": "0.00011 EUR",
+                    "display_short": "0.00 EUR",
+                    "value_int": "11"
+                },
+                "available": {
+                    "currency": "EUR",
+                    "value": "0.00011",
+                    "display": "0.00011 EUR",
+                    "display_short": "0.00 EUR",
+                    "value_int": "11"
+                }
+            },
+            "BCH": {
+                "balance": {
+                    "currency": "BCH",
+                    "value": "0.00000000",
+                    "display": "0.00000000 BCH",
+                    "display_short": "0.00 BCH",
+                    "value_int": "0"
+                },
+                "available": {
+                    "currency": "BCH",
+                    "value": "0.00000000",
+                    "display": "0.00000000 BCH",
+                    "display_short": "0.00 BCH",
+                    "value_int": "0"
+                }
+            },
+            "LTC": {
+                "balance": {
+                    "currency": "LTC",
+                    "value": "1.00000000",
+                    "display": "1.00000000 LTC",
+                    "display_short": "1.00 LTC",
+                    "value_int": "100000000"
+                },
+                "available": {
+                    "currency": "LTC",
+                    "value": "1.00000000",
+                    "display": "1.00000000 LTC",
+                    "display_short": "1.00 LTC",
+                    "value_int": "100000000"
+                }
+            },
+            "BTC": {
+                "balance": {
+                    "currency": "BTC",
+                    "value": "0.79408221",
+                    "display": "0.79408221 BTC",
+                    "display_short": "0.79 BTC",
+                    "value_int": "79408221"
+                },
+                "available": {
+                    "currency": "BTC",
+                    "value": "0.59408221",
+                    "display": "0.59408221 BTC",
+                    "display_short": "0.59 BTC",
+                    "value_int": "59408221"
+                }
+            }
+        }
+    },
+    "result": "success"
+}
+
+
+
+GET ORDER:
+{
+    "result": "success",
+    "data": {
+        "amount": {
+            "currency": "BTC",
+            "value_int": "29884620",
+            "value": "0.29884620",
+            "display_short": "0.30 BTC",
+            "display": "0.29884620 BTC"
+        },
+        "total_spent": {
+            "currency": "EUR",
+            "value_int": "203477803",
+            "value": "2034.77803",
+            "display_short": "2034.78 EUR",
+            "display": "2034.77803 EUR"
+        },
+        "amount_funds": {
+            "currency": "EUR",
+            "value_int": "203477803",
+            "value": "2034.77803",
+            "display_short": "2034.78 EUR",
+            "display": "2034.77803 EUR"
+        },
+        "total_amount": {
+            "currency": "BTC",
+            "value_int": "29884620",
+            "value": "0.29884620",
+            "display_short": "0.30 BTC",
+            "display": "0.29884620 BTC"
+        },
+        "avg_cost": {
+            "currency": "EUR",
+            "value_int": "680878000",
+            "value": "6808.78000",
+            "display_short": "6808.78 EUR",
+            "display": "6808.78000 EUR"
+        },
+        "total_fee": {
+            "currency": "BTC",
+            "value_int": "74858",
+            "value": "0.00074858",
+            "display_short": "0.00 BTC",
+            "display": "0.00074858 BTC"
+        },
+        "item": "BTC",
+        "trades": [
+            {
+                "amount": {
+                    "currency": "BTC",
+                    "value_int": "29884620",
+                    "value": "0.29884620",
+                    "display_short": "0.30 BTC",
+                    "display": "0.29884620 BTC"
+                },
+                "item": "BTC",
+                "date": 1518277502,
+                "price": {
+                    "currency": "EUR",
+                    "value_int": "680878000",
+                    "value": "6808.78000",
+                    "display_short": "6808.78 EUR",
+                    "display": "6808.78000 EUR"
+                },
+                "currency": "EUR",
+                "trade_id": 1032429
+            }
+        ],
+        "date": 1518192917,
+        "currency": "EUR",
+        "status": "closed",
+        "order_id": 21703522,
+        "type": "bid",
+        "label": "Bot-1",
+        "price": {
+            "currency": "EUR",
+            "value_int": "680878000",
+            "value": "6808.78000",
+            "display_short": "6808.78 EUR",
+            "display": "6808.78000 EUR"
+        }
+    }
+}

@@ -9,6 +9,7 @@ from trader.base import *  # noqa
 from trader.models import Session
 from trader.storage import Storage
 from trader.trader import Trader
+import threading
 
 
 class Bl3pWebSocket(websocket.WebSocketApp):
@@ -59,10 +60,10 @@ def on_close(ws):
     logger.log('closed', '"### closed ###"')
 
 
-def run_analizer():
+def run_analizer(ws):
     while True:
+        logger.log('analysing', 'Session: #{}'.format(ws.session.id))
         time.sleep(settings.BOT_ANALIZER_INTERVAL)
-
         result = Analyser.analyse(ws.session)
 
         ws.trader.take_action(
@@ -96,9 +97,11 @@ def run():
     )
     ws.session = session
     ws.trader = trader
-    ws.run_forever()
 
-    run_analizer()
+    t1 = threading.Thread(target=ws.run_forever)
+    t2 = threading.Thread(target=run_analizer, args=(ws,))
+    t1.start()
+    t2.start()
 
 
 def echo_settings():
