@@ -45,26 +45,29 @@ class Analyser(object):
         )
         rs = influx_client.query(q)
         if len(list(rs.get_points(measurement=diff_measurement))) > 1:
-            signal.append(list(rs.get_points(measurement=diff_measurement))[-2]['ma3'])
-            signal.append(list(rs.get_points(measurement=diff_measurement))[-1]['ma3'])
+            try:
+                signal.append(list(rs.get_points(measurement=diff_measurement))[-2]['ma3'])
+                signal.append(list(rs.get_points(measurement=diff_measurement))[-1]['ma3'])
 
-            _signal = float(list(rs.get_points(measurement=diff_measurement))[-1]['ma3'])
-            _macd = float(list(rs.get_points(measurement=diff_measurement))[-1]['diff'])
-            _hist = _macd - _signal
+                _signal = float(list(rs.get_points(measurement=diff_measurement))[-1]['ma3'])
+                _macd = float(list(rs.get_points(measurement=diff_measurement))[-1]['diff'])
+                _hist = _macd - _signal
 
-            Storage.store([{
-                'measurement': '{pair}_MACD'.format(pair=pair),
-                'tags': {
-                    'asset': 'MA3',
-                    'currency': 'MACD'
-                },
-                'fields': {
-                    'timestamp': current['time'],
-                    'signal': _signal,
-                    'macd': _macd,
-                    'hist': _hist,
-                }
-            }])
+                Storage.store([{
+                    'measurement': '{pair}_MACD'.format(pair=pair),
+                    'tags': {
+                        'asset': 'MA3',
+                        'currency': 'MACD'
+                    },
+                    'fields': {
+                        'timestamp': current['time'],
+                        'signal': _signal,
+                        'macd': _macd,
+                        'hist': _hist,
+                    }
+                }])
+            except Exception as e:
+                logger.log('error', e)
 
         # MACD
         q = """SELECT mean("diff") as diff
