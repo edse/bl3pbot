@@ -1,0 +1,53 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Rest-Key: ['!CHANGE-ME!']
+      Rest-Sign:
+      - !!binary |
+        RDBldHpXUkpHdWR3bVNHRzZLUGJxYVNiWHdReFZqUW8zemU4NCtHNHAzMXZDMGtFNkpJK1JDaXdS
+        S1IweUE3VHk5N3dlUjhMemtVcXhyRy9CMzBQaGc9PQ==
+      User-Agent: [python-requests/2.18.4]
+    method: POST
+    uri: https://api.bl3p.eu/1/GENMKT/money/info
+  response:
+    body: {string: "{\n  \"result\": \"success\",\n  \"data\": {\n    \"user_id\"\
+        : 4557,\n    \"wallets\": {\n      \"BTC\": {\n        \"balance\": {\n  \
+        \        \"value_int\": \"79408221\",\n          \"display_short\": \"0.79\
+        \ BTC\",\n          \"display\": \"0.79408221 BTC\",\n          \"currency\"\
+        : \"BTC\",\n          \"value\": \"0.79408221\"\n        },\n        \"available\"\
+        : {\n          \"value_int\": \"59408221\",\n          \"display_short\":\
+        \ \"0.59 BTC\",\n          \"display\": \"0.59408221 BTC\",\n          \"\
+        currency\": \"BTC\",\n          \"value\": \"0.59408221\"\n        }\n   \
+        \   },\n      \"EUR\": {\n        \"balance\": {\n          \"value_int\"\
+        : \"11\",\n          \"display_short\": \"0.00 EUR\",\n          \"display\"\
+        : \"0.00011 EUR\",\n          \"currency\": \"EUR\",\n          \"value\"\
+        : \"0.00011\"\n        },\n        \"available\": {\n          \"value_int\"\
+        : \"11\",\n          \"display_short\": \"0.00 EUR\",\n          \"display\"\
+        : \"0.00011 EUR\",\n          \"currency\": \"EUR\",\n          \"value\"\
+        : \"0.00011\"\n        }\n      },\n      \"BCH\": {\n        \"balance\"\
+        : {\n          \"value_int\": \"0\",\n          \"display_short\": \"0.00\
+        \ BCH\",\n          \"display\": \"0.00000000 BCH\",\n          \"currency\"\
+        : \"BCH\",\n          \"value\": \"0.00000000\"\n        },\n        \"available\"\
+        : {\n          \"value_int\": \"0\",\n          \"display_short\": \"0.00\
+        \ BCH\",\n          \"display\": \"0.00000000 BCH\",\n          \"currency\"\
+        : \"BCH\",\n          \"value\": \"0.00000000\"\n        }\n      },\n   \
+        \   \"LTC\": {\n        \"balance\": {\n          \"value_int\": \"100000000\"\
+        ,\n          \"display_short\": \"1.00 LTC\",\n          \"display\": \"1.00000000\
+        \ LTC\",\n          \"currency\": \"LTC\",\n          \"value\": \"1.00000000\"\
+        \n        },\n        \"available\": {\n          \"value_int\": \"100000000\"\
+        ,\n          \"display_short\": \"1.00 LTC\",\n          \"display\": \"1.00000000\
+        \ LTC\",\n          \"currency\": \"LTC\",\n          \"value\": \"1.00000000\"\
+        \n        }\n      }\n    },\n    \"trade_fee\": 0.25\n  }\n}\n"}
+    headers:
+      Connection: [keep-alive]
+      Content-Length: ['1821']
+      Content-Type: [application/json]
+      Date: ['Wed, 14 Feb 2018 13:14:38 GMT']
+      Server: [nginx]
+    status: {code: 200, message: OK}
+version: 1

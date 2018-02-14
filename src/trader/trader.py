@@ -34,11 +34,15 @@ class Trader(object):
         else:
             return 0
 
-        if available < settings.EXCHANGES['BL3P']['min_sell_value']:
+        if available < settings.EXCHANGES['BL3P']['min_sell_value'][self.session.pair]:
             logger.log('amount', 'Amount available ({}) is smaller than min_sell_value ({})'.format(
-                available, settings.EXCHANGES['BL3P']['min_sell_value']
+                available, settings.EXCHANGES['BL3P']['min_sell_value'][self.session.pair]
             ))
             return 0
+
+        if settings.EXCHANGES['BL3P']['max_sell_value'][self.session.pair] > 0:
+            if available > settings.EXCHANGES['BL3P']['max_sell_value'][self.session.pair]:
+                available = settings.EXCHANGES['BL3P']['max_sell_value'][self.session.pair]
 
         return available
 
@@ -49,13 +53,18 @@ class Trader(object):
         if balance:
             available = int(balance['data']['wallets']['EUR']['available']['value_int'])
 
-        if available < settings.EXCHANGES['BL3P']['min_buy_value']:
-            logger.log('amount', 'EUR amount available ({}) is smaller than min_buy_value  ({})'.format(
-                available, settings.EXCHANGES['BL3P']['min_buy_value']
-            ))
-            return 0
+        if settings.EXCHANGES['BL3P']['min_buy_value'][self.session.pair] > 0:
+            if available < settings.EXCHANGES['BL3P']['min_buy_value'][self.session.pair]:
+                logger.log('amount', 'EUR amount available ({}) is smaller than min_buy_value  ({})'.format(
+                    available, settings.EXCHANGES['BL3P']['min_buy_value'][self.session.pair]
+                ))
+                return 0
 
-        return int(float(available) / float(price) * NORM_AMOUNT)
+        if settings.EXCHANGES['BL3P']['max_buy_value'][self.session.pair] > 0:
+            if available > settings.EXCHANGES['BL3P']['max_buy_value'][self.session.pair]:
+                available = settings.EXCHANGES['BL3P']['max_buy_value'][self.session.pair]
+
+        return int(available / price * NORM_AMOUNT)
 
     def store_trade(self, params, order_id=0):
         logger.log('trade', str(params))
@@ -109,6 +118,9 @@ class Trader(object):
             # check if the buy price + fees is cheaper than the last sell
             last_order = Trade.objects.filter(type=Trade.SELL).last()
 
+            if not last_order:
+                return False
+
             _amount = float(params['amount_int']) / NORM_AMOUNT
             _price = float(params['price_int']) / NORM_PRICE
             _fee = float(settings.EXCHANGES['BL3P']['trade_fee'])
@@ -152,21 +164,23 @@ class Trader(object):
             # check if the sell price is higher than the last buy + fees
             last_order = Trade.objects.filter(type=Trade.BUY).last()
 
-            if last_order:
-                _price = float(params['price_int']) / NORM_PRICE
-                _fee = float(settings.EXCHANGES['BL3P']['trade_fee'])
-                _total = _price + ((_price / 100) * _fee)
+            if not last_order:
+                return False
 
-                if _total <= last_order.total:
-                    logger.log(
-                        'safe_sell',
-                        'Trying to sell for a cheaper price than the last buy with safe_trade set to true!'
-                    )
-                    logger.log(
-                        'safe_sell',
-                        'Current price: {} Last trade price + fees: {}'.format(price, last_order.total)
-                    )
-                    return False
+            _price = float(params['price_int']) / NORM_PRICE
+            _fee = float(settings.EXCHANGES['BL3P']['trade_fee'])
+            _total = _price + ((_price / 100) * _fee)
+
+            if _total <= last_order.total:
+                logger.log(
+                    'safe_sell',
+                    'Trying to sell for a cheaper price than the last buy with safe_trade set to true!'
+                )
+                logger.log(
+                    'safe_sell',
+                    'Current price: {} Last trade price + fees: {}'.format(price, last_order.total)
+                )
+                return False
 
         if amount <= 0:
             return False
