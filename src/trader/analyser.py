@@ -81,9 +81,9 @@ class Analyser(object):
             group=group
         )
         rs = influx_client.query(q)
-        if len(list(rs.get_points(measurement='MA1_MA2_DIFF'))) > 1:
-            macd.append(list(rs.get_points(measurement='MA1_MA2_DIFF'))[-2]['diff'])
-            macd.append(list(rs.get_points(measurement='MA1_MA2_DIFF'))[-1]['diff'])
+        if len(list(rs.get_points(measurement=diff_measurement))) > 1:
+            macd.append(list(rs.get_points(measurement=diff_measurement))[-2]['diff'])
+            macd.append(list(rs.get_points(measurement=diff_measurement))[-1]['diff'])
 
         if macd and signal:
             h0 = macd[0] - signal[0]
