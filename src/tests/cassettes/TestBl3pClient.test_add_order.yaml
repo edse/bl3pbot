@@ -1,0 +1,28 @@
+interactions:
+- request:
+    body: fee_currency=BTC&price_int=20000000000&amount_int=10000&type=ask
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['64']
+      Content-Type: [application/x-www-form-urlencoded]
+      Rest-Key: ['!CHANGE-ME!']
+      Rest-Sign:
+      - !!binary |
+        MmdXOWM4c28vTUliOXpnY20wZGlUdHdWVWdEVUErRDVZeklVZFRMTEhKVnVjbUx5MzJHNDdieHJp
+        U0FkWk9uMVhCSFlyTHdOUTZTaHp1VzVlaVR3MkE9PQ==
+      User-Agent: [python-requests/2.18.4]
+    method: POST
+    uri: https://api.bl3p.eu/1/BTCEUR/money/order/add
+  response:
+    body: {string: "{\n  \"result\": \"success\",\n  \"data\": {\"order_id\": 22346604}\n\
+        }\n"}
+    headers:
+      Connection: [keep-alive]
+      Content-Length: ['60']
+      Content-Type: [application/json]
+      Date: ['Thu, 15 Feb 2018 19:11:43 GMT']
+      Server: [nginx]
+    status: {code: 200, message: OK}
+version: 1

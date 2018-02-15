@@ -59,4 +59,13 @@ class TestBl3pClient(BaseTestCase):
         assert 'display' in result['data']['price']
 
     def test_add_order(self):
-        pass
+        params = {
+            'type': 'ask',
+            'amount_int': 10000,
+            'price_int': 20000000000,
+            'fee_currency': 'BTC'
+        }
+        result = Bl3p().add_order(params, 'BTCEUR')
+
+        assert result['result'] == 'success'
+        assert result['data']['order_id'] > 0

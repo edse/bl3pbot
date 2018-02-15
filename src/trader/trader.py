@@ -108,7 +108,7 @@ class Trader(object):
             'type': 'bid',
             'amount_int': amount,
             'price_int': price,
-            'fee_currency': 'BTC' if self.session.pair == 'BTCEUR' else 'LTCEUR'
+            'fee_currency': 'BTC' if self.session.pair == 'BTCEUR' else 'LTC'
         }
 
         """
@@ -135,12 +135,8 @@ class Trader(object):
         if amount <= 0:
             return False
 
-        response = self.client.add_order(params, self.session.pair)
-
-        if response:
-            self.store_trade(params, response['data']['order_id'])
-        else:
-            self.store_trade(params)
+        result = self.client.add_order(params, self.session.pair)
+        self.store_trade(params, result['data']['order_id'])
 
     def sell(self, price):
         price = int(price * NORM_PRICE)
@@ -149,7 +145,7 @@ class Trader(object):
             'type': 'ask',
             'amount_int': amount,
             'price_int': price,
-            'fee_currency': 'BTC' if self.session.pair == 'BTCEUR' else 'LTCEUR'
+            'fee_currency': 'BTC' if self.session.pair == 'BTCEUR' else 'LTC'
         }
 
         """
@@ -176,12 +172,8 @@ class Trader(object):
         if amount <= 0:
             return False
 
-        response = self.client.add_order(params, self.session.pair)
-
-        if response:
-            self.store_trade(params, response['data']['order_id'])
-        else:
-            self.store_trade(params)
+        result = self.client.add_order(params, self.session.pair)
+        self.store_trade(params, result['data']['order_id'])
 
     def get_order(self, order_id):
         params = {'order_id': order_id}

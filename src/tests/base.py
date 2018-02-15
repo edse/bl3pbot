@@ -9,7 +9,7 @@ class BaseTestCase(VCRTestCase):
             return False
 
         kwargs['record_mode'] = 'none' if settings.MOCK_OR_ERROR else 'new_episodes'
-        kwargs['match_on'] = ['method', 'scheme', 'host', 'port', 'path', 'query', 'body', 'headers']
+        kwargs['match_on'] = ['method', 'scheme', 'host', 'port', 'path', 'query', 'body']
         kwargs['cassette_library_dir'] = settings.ROOT_PATH + '/src/tests/cassettes'
 
         myvcr = super(BaseTestCase, self)._get_vcr(**kwargs)
