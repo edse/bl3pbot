@@ -118,24 +118,19 @@ class Trader(object):
             # check if the buy price + fees is cheaper than the last sell
             last_order = Trade.objects.filter(type=Trade.SELL).last()
 
-            if not last_order:
-                return False
+            if last_order:
+                _price = float(params['price_int']) / NORM_PRICE
 
-            _amount = float(params['amount_int']) / NORM_AMOUNT
-            _price = float(params['price_int']) / NORM_PRICE
-            _fee = float(settings.EXCHANGES['BL3P']['trade_fee'])
-            _total = (_price * _amount) + (((_price * _amount) / 100) * _fee)
-
-            if _total > last_order.total:
-                logger.log(
-                    'safe_buy',
-                    'Trying to buy for a higher price than the last sell with safe_trade set to true!'
-                )
-                logger.log(
-                    'safe_buy',
-                    'Current price: {} Last trade price + fees: {}'.format(price, last_order.price)
-                )
-                return False
+                if _price >= last_order.price:
+                    logger.log(
+                        'safe_buy',
+                        'Trying to buy for a higher price than the last sell with safe_trade set to true!'
+                    )
+                    logger.log(
+                        'safe_buy',
+                        'Current price: {} Last trade price + fees: {}'.format(price, last_order.price)
+                    )
+                    return False
 
         if amount <= 0:
             return False
@@ -164,23 +159,19 @@ class Trader(object):
             # check if the sell price is higher than the last buy + fees
             last_order = Trade.objects.filter(type=Trade.BUY).last()
 
-            if not last_order:
-                return False
+            if last_order:
+                _price = float(params['price_int']) / NORM_PRICE
 
-            _price = float(params['price_int']) / NORM_PRICE
-            _fee = float(settings.EXCHANGES['BL3P']['trade_fee'])
-            _total = _price + ((_price / 100) * _fee)
-
-            if _total <= last_order.total:
-                logger.log(
-                    'safe_sell',
-                    'Trying to sell for a cheaper price than the last buy with safe_trade set to true!'
-                )
-                logger.log(
-                    'safe_sell',
-                    'Current price: {} Last trade price + fees: {}'.format(price, last_order.total)
-                )
-                return False
+                if _price <= last_order.price:
+                    logger.log(
+                        'safe_sell',
+                        'Trying to sell for a cheaper price than the last buy with safe_trade set to true!'
+                    )
+                    logger.log(
+                        'safe_sell',
+                        'Current price: {} Last trade price + fees: {}'.format(price, last_order.price)
+                    )
+                    return False
 
         if amount <= 0:
             return False
